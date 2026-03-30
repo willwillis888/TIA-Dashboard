@@ -302,7 +302,8 @@ const TABS = { looker:'Looker Data', responses:'Responses', gap:'Gap Data' };
 const REFRESH = 60000;
 
 function csvUrl(tab) {
-  return `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent(tab)}`;
+  const sheetUrl = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent(tab)}`;
+  return `https://api.allorigins.win/get?url=${encodeURIComponent(sheetUrl)}`;
 }
 
 // ─── CHART STATE ──────────────────────────────────────
@@ -551,7 +552,9 @@ function dbg(msg) {
 async function fetchTab(tab) {
   const r = await fetch(csvUrl(tab));
   if (!r.ok) throw new Error(`HTTP ${r.status}`);
-  const t = await r.text();
+  const json = await r.json();
+  const t = json.contents || '';
+  if (!t) throw new Error(`Empty response for tab "${tab}"`);
   if (t.trim().startsWith('<')) throw new Error('Returned HTML — sheet may not be public');
   return parseCSV(t);
 }
