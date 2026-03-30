@@ -21,6 +21,7 @@
     --text:         #eedfc0;
     --text-dim:     #7a6045;
     --radius:       5px;
+    --navy:         #0d2137;
   }
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   body {
@@ -31,42 +32,42 @@
     line-height: 1.4;
     min-height: 100vh;
   }
-
-  /* HEADER */
   header {
-    background: var(--gold);
-    padding: 9px 20px;
+    background: var(--navy);
+    padding: 10px 22px;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    box-shadow: 0 2px 18px rgba(0,0,0,0.55);
+    box-shadow: 0 2px 20px rgba(0,0,0,0.7);
+    border-bottom: 2px solid var(--gold);
   }
-  .hdr-left { display: flex; align-items: center; gap: 12px; }
-  .tia-mark {
-    display: flex; align-items: center; gap: 5px;
-  }
+  .hdr-left { display: flex; align-items: center; gap: 14px; }
+  .tia-mark { display: flex; align-items: center; gap: 0px; }
   .tia-text {
     font-family: 'Bebas Neue', sans-serif;
-    font-size: 27px; color: #190c19; letter-spacing: 2px; line-height: 1;
+    font-size: 30px; color: #ffffff; letter-spacing: 3px; line-height: 1;
   }
   .tia-chevron {
     width: 0; height: 0;
-    border-top: 9px solid transparent;
-    border-bottom: 9px solid transparent;
-    border-left: 14px solid #190c19;
+    border-top: 10px solid transparent;
+    border-bottom: 10px solid transparent;
+    border-left: 16px solid #ffffff;
+    margin-left: 4px;
+  }
+  .hdr-divider {
+    width: 1px; height: 24px;
+    background: rgba(198,169,107,0.45);
   }
   header h1 {
     font-family: 'Barlow Condensed', sans-serif;
-    font-size: 17px; font-weight: 700;
-    color: #190c19; letter-spacing: 0.8px; text-transform: uppercase;
+    font-size: 16px; font-weight: 600;
+    color: var(--gold); letter-spacing: 1.5px; text-transform: uppercase;
   }
   .hdr-right {
     font-family: 'Barlow Condensed', sans-serif;
     font-size: 10px; font-weight: 700; letter-spacing: 1.5px;
-    color: rgba(25,12,25,0.5); text-transform: uppercase;
+    color: rgba(198,169,107,0.45); text-transform: uppercase;
   }
-
-  /* LIVE BAR */
   .live-bar {
     background: var(--bg2);
     border-bottom: 1px solid var(--gold-border);
@@ -90,8 +91,6 @@
     transition: all .2s;
   }
   .btn-refresh:hover { border-color: var(--gold); color: var(--gold); }
-
-  /* DEBUG */
   #debug {
     display: none; margin: 10px 20px;
     background: #100010; border: 1px solid #c44;
@@ -100,15 +99,10 @@
     line-height: 1.7; max-height: 160px; overflow-y: auto;
   }
   #debug strong { color: #f44; display: block; margin-bottom: 4px; }
-
-  /* MAIN */
   main { padding: 13px 20px 20px; display: grid; gap: 11px; }
-
   .row-kpi    { display: grid; grid-template-columns: 1.5fr 0.9fr 0.9fr 0.9fr 2fr; gap: 10px; }
   .row-charts { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
   .row-bot    { display: grid; grid-template-columns: 1fr 1.65fr; gap: 10px; }
-
-  /* CARD */
   .card {
     background: var(--bg2);
     border: 1px solid var(--gold-border);
@@ -123,15 +117,12 @@
     background: linear-gradient(135deg, var(--gold-glow) 0%, transparent 55%);
     pointer-events: none;
   }
-  .card.hi {
-    border-color: var(--gold);
-  }
+  .card.hi { border-color: var(--gold); }
   .card.hi::after {
     content: '';
     position: absolute; top: 0; left: 0; right: 0; height: 2px;
     background: linear-gradient(90deg, var(--gold-dim), var(--gold-bright), var(--gold-dim));
   }
-
   @keyframes fadeUp {
     from { opacity:0; transform:translateY(7px); }
     to   { opacity:1; transform:translateY(0); }
@@ -145,7 +136,6 @@
   .row-charts .card:nth-child(2){animation-delay:.34s}
   .row-bot .card:nth-child(1){animation-delay:.39s}
   .row-bot .card:nth-child(2){animation-delay:.44s}
-
   .lbl {
     font-family: 'Barlow Condensed', sans-serif;
     font-size: 10px; font-weight: 700;
@@ -155,48 +145,37 @@
   }
   .kpi-big {
     font-family: 'Bebas Neue', sans-serif;
-    font-size: 48px; line-height: .92; letter-spacing: 1px;
-    color: var(--text);
+    font-size: 48px; line-height: .92; letter-spacing: 1px; color: var(--text);
   }
   .kpi-med {
     font-family: 'Bebas Neue', sans-serif;
-    font-size: 40px; line-height: .92; letter-spacing: 1px;
-    color: var(--text);
+    font-size: 40px; line-height: .92; letter-spacing: 1px; color: var(--text);
   }
   .peg-val {
-    font-size: 14px; font-weight: 500;
-    color: var(--text); line-height: 1.45; margin-top: 3px;
+    font-size: 13px; font-weight: 500;
+    color: var(--text); line-height: 1.5; margin-top: 4px;
   }
-
-  /* CHART */
   .ch { position: relative; }
-
-  /* REC ACTIONS */
   .rec-sub {
-    font-size: 11.5px; font-weight: 600;
-    color: var(--text);
+    font-size: 11.5px; font-weight: 600; color: var(--text);
     border-bottom: 1px solid var(--gold-border);
     padding-bottom: 7px; margin-bottom: 10px;
   }
   .rec-list { display: flex; flex-direction: column; gap: 9px; }
   .rec-row { display: flex; gap: 9px; align-items: flex-start; }
   .rec-dot {
-    width: 9px; height: 9px; border-radius: 50%;
-    background: var(--gold); flex-shrink: 0; margin-top: 3px;
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--gold); flex-shrink: 0; margin-top: 4px;
     box-shadow: 0 0 5px rgba(198,169,107,.35);
   }
-  .rec-row p { font-size: 12px; line-height: 1.5; }
+  .rec-row p { font-size: 12px; line-height: 1.6; }
   .rec-row strong { color: var(--gold-bright); }
-
-  /* FOOTER */
   footer {
     text-align: right; padding: 8px 20px 16px;
     font-family: 'Barlow Condensed', sans-serif;
     font-size: 11px; font-weight: 700;
     color: var(--gold-dim); letter-spacing: 1.5px; text-transform: uppercase;
   }
-
-  /* LOADER */
   #loader {
     position: fixed; inset: 0; background: var(--bg);
     display: flex; flex-direction: column; align-items: center; justify-content: center;
@@ -230,6 +209,7 @@
       <span class="tia-text">TIA</span>
       <div class="tia-chevron"></div>
     </div>
+    <div class="hdr-divider"></div>
     <h1>Community Execution Profile</h1>
   </div>
   <div class="hdr-right">Live Dashboard</div>
@@ -296,7 +276,6 @@
 <footer>Execution Gap Intelligence – Will Connect</footer>
 
 <script>
-// ─── CONFIG ───────────────────────────────────────────
 const SHEET_ID = '1qNpmuLtxDpQ1V9vStsS55gkt1Cwm70ZGg0TeWeYLWeg';
 const TABS = { looker:'Looker Data', responses:'Responses', gap:'Gap Data' };
 const REFRESH = 60000;
@@ -306,10 +285,8 @@ function csvUrl(tab) {
   return `https://corsproxy.io/?${encodeURIComponent(sheet)}`;
 }
 
-// ─── CHART STATE ──────────────────────────────────────
 const CH = {};
 const GOLD='#c6a96b', GOLDB='#d9be88', TEXT='#eedfc0', GRID='rgba(198,169,107,0.08)', BORDR='rgba(198,169,107,0.3)';
-
 Chart.defaults.color = TEXT;
 Chart.defaults.font.family = "'Barlow',sans-serif";
 Chart.defaults.font.size = 11;
@@ -346,7 +323,6 @@ function hbar(id, labels, vals, suffix='', max=null) {
   CH[id] = new Chart(ctx, cfg);
 }
 
-// ─── CSV PARSER ───────────────────────────────────────
 function parseCSV(raw) {
   const lines = raw.trim().split('\n');
   if (lines.length < 2) return [];
@@ -371,16 +347,6 @@ function splitLine(l) {
 
 function toN(v){ return parseFloat((v||'').replace(/[^0-9.\-]/g,''))||0; }
 
-function findKey(obj, ...terms) {
-  const keys = Object.keys(obj);
-  for (const t of terms) {
-    const k = keys.find(k => k.toLowerCase().includes(t.toLowerCase()));
-    if (k) return k;
-  }
-  return null;
-}
-
-// ─── ACTIONS MAP ─────────────────────────────────────
 const ACTS = {
   'Entry Discipline':{
     means:'Members understand the setup but fail at entry timing and confirmation.',
@@ -416,47 +382,42 @@ const ACTS = {
 
 function buildRec(gap) {
   document.getElementById('rec-title').textContent = `Primary Execution Gap: ${gap}`;
-  let m = null;
+  const matched = [];
   for (const [k,v] of Object.entries(ACTS)) {
-    if (gap && gap.toLowerCase().includes(k.toLowerCase())) { m=v; break; }
+    if (gap && gap.toLowerCase().includes(k.toLowerCase())) matched.push({k,v});
   }
-  if (!m) m = Object.values(ACTS)[0];
-  document.getElementById('rec-list').innerHTML = `
-    <div class="rec-row"><div class="rec-dot"></div><p><strong>What this means:</strong><br>${m.means}</p></div>
-    <div class="rec-row"><div class="rec-dot"></div><p><strong>Recommended action:</strong><br>${m.action}</p></div>
-    <div class="rec-row"><div class="rec-dot"></div><p><strong>Focus areas:</strong><br>${m.focus.map(f=>'• '+f).join('<br>')}</p></div>
-    <div class="rec-row"><div class="rec-dot"></div><p><strong>Expected outcome:</strong><br>${m.outcome}</p></div>
-  `;
+  if (!matched.length) matched.push({k:'Default', v:Object.values(ACTS)[0]});
+  if (matched.length === 1) {
+    const m = matched[0].v;
+    document.getElementById('rec-list').innerHTML = `
+      <div class="rec-row"><div class="rec-dot"></div><p><strong>What this means:</strong><br>${m.means}</p></div>
+      <div class="rec-row"><div class="rec-dot"></div><p><strong>Recommended action:</strong><br>${m.action}</p></div>
+      <div class="rec-row"><div class="rec-dot"></div><p><strong>Focus areas:</strong><br>${m.focus.map(f=>'• '+f).join('<br>')}</p></div>
+      <div class="rec-row"><div class="rec-dot"></div><p><strong>Expected outcome:</strong><br>${m.outcome}</p></div>
+    `;
+  } else {
+    document.getElementById('rec-list').innerHTML = matched.map(({k,v}) => `
+      <div class="rec-row"><div class="rec-dot"></div><p><strong>${k}:</strong><br>${v.action}<br><em style="color:var(--gold-dim);font-size:11px">Focus: ${v.focus.join(', ')}</em></p></div>
+    `).join('');
+  }
 }
 
-// ─── RENDER ───────────────────────────────────────────
 function render(looker, responses, gap) {
-  // Use Looker Data as primary; fall back to Responses
   const L = looker.length ? looker : responses;
   const N = L.length;
   if (!N) { dbg('No rows found in Looker Data or Responses.'); return; }
 
-  // ── HARDCODED COLUMN MAPPING (confirmed from console) ──
-  // Looker Data: Name, Email, Execution_Score, Band, Weakest_Domain,
-  //              Structure_%, Entry_%, Risk_%, Volume_%, Emotional_%,
-  //              Baseline Score, Final Score, Progress Delta
-  // Gap Data:    Domain, Avg Performance, Struggle %
-
-  // ── KPIs ──
   const avgScore = Math.round(L.reduce((s,r)=>s+toN(r['Execution_Score']),0)/N);
   const avgDelta = Math.round(L.reduce((s,r)=>s+toN(r['Progress Delta']),0)/N*10)/10;
-
-  // Members Execution Ready = Band is Elite or Advanced
-  const readyCount = L.filter(r=>{
-    const b=(r['Band']||'').toLowerCase();
-    return b==='elite'||b==='advanced';
-  }).length;
+  const readyCount = L.filter(r => toN(r['Final Score']) >= 70).length;
   const readyPct = Math.round(readyCount/N*100)+'%';
 
-  // Primary gap = most common Weakest_Domain
   const freq={};
   L.forEach(r=>{ const v=r['Weakest_Domain']; if(v) freq[v]=(freq[v]||0)+1; });
-  const freqSorted = Object.entries(freq).sort((a,b)=>b[1]-a[1]); const topCount = freqSorted[0]?.[1]||0; const topDomains = freqSorted.filter(([,c])=>c>=topCount).map(([d])=>d); const peg = topDomains.join(', ')||'—';
+  const freqSorted = Object.entries(freq).sort((a,b)=>b[1]-a[1]);
+  const topCount = freqSorted[0]?.[1] || 0;
+  const topDomains = freqSorted.filter(([,c])=>c>=topCount).map(([d])=>d);
+  const peg = topDomains.join(', ') || '—';
 
   document.getElementById('v-score').textContent   = avgScore;
   document.getElementById('v-delta').textContent   = avgDelta > 0 ? '+'+avgDelta : avgDelta;
@@ -464,7 +425,6 @@ function render(looker, responses, gap) {
   document.getElementById('v-ready').textContent   = readyPct;
   document.getElementById('v-peg').textContent     = peg;
 
-  // ── Community Execution Profile (avg % per domain) ──
   const profMap = [
     { label:'Structure', key:'Structure_%' },
     { label:'Emotional', key:'Emotional_%' },
@@ -478,38 +438,28 @@ function render(looker, responses, gap) {
   })).sort((a,b)=>b.val-a.val);
   hbar('c-profile', profPairs.map(p=>p.label), profPairs.map(p=>p.val), '', 100);
 
-  // ── Domain Struggle Rates (from Gap Data tab) ──
   if (gap.length) {
     const sorted = [...gap].sort((a,b)=>toN(b['Struggle %'])-toN(a['Struggle %']));
-    hbar('c-struggle',
-      sorted.map(r=>r['Domain']),
-      sorted.map(r=>Math.round(toN(r['Struggle %']))),
-      '%', 100
-    );
+    hbar('c-struggle', sorted.map(r=>r['Domain']), sorted.map(r=>Math.round(toN(r['Struggle %']))), '%', 100);
   }
 
-  // ── Skill Distribution (from Band column) ──
   const tiers = ['Elite','Advanced','Developing','Struggling'];
   const tv = tiers.map(t=>Math.round(L.filter(r=>(r['Band']||'').toLowerCase()===t.toLowerCase()).length/N*100));
   hbar('c-skill', tiers, tv, '%', 100);
 
-  // ── Rec Actions ──
   buildRec(peg);
 
-  // ── Timestamp ──
   const now = new Date();
   document.getElementById('ts').textContent =
     `Live · Updated ${now.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})} · Refreshes every 60s`;
 }
 
-// ─── DEBUG ────────────────────────────────────────────
 function dbg(msg) {
   const p = document.getElementById('debug');
   p.style.display = 'block';
   document.getElementById('dbg-msg').innerHTML += msg + '<br>';
 }
 
-// ─── FETCH ────────────────────────────────────────────
 async function fetchTab(tab) {
   const r = await fetch(csvUrl(tab));
   if (!r.ok) throw new Error(`HTTP ${r.status}`);
@@ -522,18 +472,15 @@ async function fetchTab(tab) {
 async function loadAll() {
   document.getElementById('debug').style.display='none';
   document.getElementById('dbg-msg').innerHTML='';
-
   const safe = (tab) => fetchTab(tab).catch(e => { dbg(`Tab "${tab}": ${e.message}`); return []; });
   const [looker, responses, gap] = await Promise.all([
     safe(TABS.looker), safe(TABS.responses), safe(TABS.gap)
   ]);
-
   if (!looker.length && !responses.length) {
     dbg('No data loaded. Make sure the sheet is set to "Anyone with the link — Viewer" and these tab names exist exactly: <b>Looker Data</b>, <b>Responses</b>, <b>Gap Data</b>.');
   } else {
     render(looker, responses, gap);
   }
-
   const ldr = document.getElementById('loader');
   ldr.style.opacity='0';
   setTimeout(()=>ldr.style.display='none', 500);
