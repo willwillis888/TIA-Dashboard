@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Community Execution Profile</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:wght@300;400;500;600;700&family=Barlow+Condensed:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:           #190c19;
+    --bg2:          #1f0f1f;
+    --bg3:          #261526;
+    --bg4:          #2e1a2e;
+    --gold:         #c6a96b;
+    --gold-bright:  #d9be88;
+    --gold-dim:     #9a7e4f;
+    --gold-glow:    rgba(198,169,107,0.10);
+    --gold-border:  rgba(198,169,107,0.32);
+    --gold-border2: rgba(198,169,107,0.65);
+    --text:         #eedfc0;
+    --text-dim:     #7a6045;
+    --radius:       5px;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Barlow', sans-serif;
+    font-size: 13px;
+    line-height: 1.4;
+    min-height: 100vh;
+  }
+
+  /* HEADER */
+  header {
+    background: var(--gold);
+    padding: 9px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 2px 18px rgba(0,0,0,0.55);
+  }
+  .hdr-left { display: flex; align-items: center; gap: 12px; }
+  .tia-mark {
+    display: flex; align-items: center; gap: 5px;
+  }
+  .tia-text {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 27px; color: #190c19; letter-spacing: 2px; line-height: 1;
+  }
+  .tia-chevron {
+    width: 0; height: 0;
+    border-top: 9px solid transparent;
+    border-bottom: 9px solid transparent;
+    border-left: 14px solid #190c19;
+  }
+  header h1 {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 17px; font-weight: 700;
+    color: #190c19; letter-spacing: 0.8px; text-transform: uppercase;
+  }
+  .hdr-right {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 10px; font-weight: 700; letter-spacing: 1.5px;
+    color: rgba(25,12,25,0.5); text-transform: uppercase;
+  }
+
+  /* LIVE BAR */
+  .live-bar {
+    background: var(--bg2);
+    border-bottom: 1px solid var(--gold-border);
+    padding: 5px 20px;
+    display: flex; align-items: center; justify-content: space-between;
+    font-size: 10.5px; color: var(--text-dim);
+  }
+  .live-ind { display: flex; align-items: center; gap: 7px; }
+  .live-dot {
+    width: 7px; height: 7px; border-radius: 50%;
+    background: var(--gold); box-shadow: 0 0 6px var(--gold);
+    animation: blink 2.5s ease-in-out infinite;
+  }
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.25} }
+  .btn-refresh {
+    background: none; border: 1px solid var(--gold-border);
+    color: var(--gold-dim); padding: 2px 11px;
+    border-radius: 3px; font-size: 10px;
+    font-family: 'Barlow Condensed', sans-serif; font-weight: 700;
+    letter-spacing: 0.8px; text-transform: uppercase; cursor: pointer;
+    transition: all .2s;
+  }
+  .btn-refresh:hover { border-color: var(--gold); color: var(--gold); }
+
+  /* DEBUG */
+  #debug {
+    display: none; margin: 10px 20px;
+    background: #100010; border: 1px solid #c44;
+    border-radius: 4px; padding: 10px 14px;
+    font-family: monospace; font-size: 11px; color: #f88;
+    line-height: 1.7; max-height: 160px; overflow-y: auto;
+  }
+  #debug strong { color: #f44; display: block; margin-bottom: 4px; }
+
+  /* MAIN */
+  main { padding: 13px 20px 20px; display: grid; gap: 11px; }
+
+  .row-kpi    { display: grid; grid-template-columns: 1.5fr 0.9fr 0.9fr 0.9fr 2fr; gap: 10px; }
+  .row-charts { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .row-bot    { display: grid; grid-template-columns: 1fr 1.65fr; gap: 10px; }
+
+  /* CARD */
+  .card {
+    background: var(--bg2);
+    border: 1px solid var(--gold-border);
+    border-radius: var(--radius);
+    padding: 11px 14px;
+    position: relative; overflow: hidden;
+    animation: fadeUp .4s ease both;
+  }
+  .card::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: linear-gradient(135deg, var(--gold-glow) 0%, transparent 55%);
+    pointer-events: none;
+  }
+  .card.hi {
+    border-color: var(--gold);
+  }
+  .card.hi::after {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0; height: 2px;
+    background: linear-gradient(90deg, var(--gold-dim), var(--gold-bright), var(--gold-dim));
+  }
+
+  @keyframes fadeUp {
+    from { opacity:0; transform:translateY(7px); }
+    to   { opacity:1; transform:translateY(0); }
+  }
+  .row-kpi .card:nth-child(1){animation-delay:.04s}
+  .row-kpi .card:nth-child(2){animation-delay:.09s}
+  .row-kpi .card:nth-child(3){animation-delay:.14s}
+  .row-kpi .card:nth-child(4){animation-delay:.19s}
+  .row-kpi .card:nth-child(5){animation-delay:.24s}
+  .row-charts .card:nth-child(1){animation-delay:.29s}
+  .row-charts .card:nth-child(2){animation-delay:.34s}
+  .row-bot .card:nth-child(1){animation-delay:.39s}
+  .row-bot .card:nth-child(2){animation-delay:.44s}
+
+  .lbl {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 10px; font-weight: 700;
+    color: var(--gold-dim);
+    text-transform: uppercase; letter-spacing: 0.9px;
+    margin-bottom: 6px;
+  }
+  .kpi-big {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 48px; line-height: .92; letter-spacing: 1px;
+    color: var(--text);
+  }
+  .kpi-med {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 40px; line-height: .92; letter-spacing: 1px;
+    color: var(--text);
+  }
+  .peg-val {
+    font-size: 14px; font-weight: 500;
+    color: var(--text); line-height: 1.45; margin-top: 3px;
+  }
+
+  /* CHART */
+  .ch { position: relative; }
+
+  /* REC ACTIONS */
+  .rec-sub {
+    font-size: 11.5px; font-weight: 600;
+    color: var(--text);
+    border-bottom: 1px solid var(--gold-border);
+    padding-bottom: 7px; margin-bottom: 10px;
+  }
+  .rec-list { display: flex; flex-direction: column; gap: 9px; }
+  .rec-row { display: flex; gap: 9px; align-items: flex-start; }
+  .rec-dot {
+    width: 9px; height: 9px; border-radius: 50%;
+    background: var(--gold); flex-shrink: 0; margin-top: 3px;
+    box-shadow: 0 0 5px rgba(198,169,107,.35);
+  }
+  .rec-row p { font-size: 12px; line-height: 1.5; }
+  .rec-row strong { color: var(--gold-bright); }
+
+  /* FOOTER */
+  footer {
+    text-align: right; padding: 8px 20px 16px;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 11px; font-weight: 700;
+    color: var(--gold-dim); letter-spacing: 1.5px; text-transform: uppercase;
+  }
+
+  /* LOADER */
+  #loader {
+    position: fixed; inset: 0; background: var(--bg);
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 16px; z-index: 999; transition: opacity .5s;
+  }
+  .ld-word {
+    font-family: 'Bebas Neue', sans-serif; font-size: 52px;
+    color: var(--gold); letter-spacing: 6px;
+    animation: blink 1.4s ease-in-out infinite;
+  }
+  .ld-track { width: 160px; height: 2px; background: var(--bg4); border-radius: 2px; overflow: hidden; }
+  .ld-fill  { height: 100%; background: var(--gold); animation: fill 2s ease-in-out forwards; }
+  @keyframes fill { 0%{width:0} 60%{width:65%} 100%{width:100%} }
+  .ld-txt {
+    font-family: 'Barlow Condensed', sans-serif; font-size: 10px;
+    letter-spacing: 2.5px; color: var(--text-dim); text-transform: uppercase;
+  }
+</style>
+</head>
+<body>
+
+<div id="loader">
+  <div class="ld-word">TIA</div>
+  <div class="ld-track"><div class="ld-fill"></div></div>
+  <div class="ld-txt">Fetching live data…</div>
+</div>
+
+<header>
+  <div class="hdr-left">
+    <div class="tia-mark">
+      <span class="tia-text">TIA</span>
+      <div class="tia-chevron"></div>
+    </div>
+    <h1>Community Execution Profile</h1>
+  </div>
+  <div class="hdr-right">Live Dashboard</div>
+</header>
+
+<div class="live-bar">
+  <div class="live-ind">
+    <div class="live-dot"></div>
+    <span id="ts">Connecting…</span>
+  </div>
+  <button class="btn-refresh" onclick="loadAll()">↻ Refresh</button>
+</div>
+
+<div id="debug"><strong>⚠ Connection Issue</strong><span id="dbg-msg"></span></div>
+
+<main>
+  <div class="row-kpi">
+    <div class="card">
+      <div class="lbl">Community Execution Score /100</div>
+      <div class="kpi-big" id="v-score">—</div>
+    </div>
+    <div class="card">
+      <div class="lbl">Progress Delta</div>
+      <div class="kpi-med" id="v-delta">—</div>
+    </div>
+    <div class="card">
+      <div class="lbl">Members Analysed</div>
+      <div class="kpi-med" id="v-members">—</div>
+    </div>
+    <div class="card">
+      <div class="lbl">Members Execution Ready</div>
+      <div class="kpi-med" id="v-ready">—</div>
+    </div>
+    <div class="card hi">
+      <div class="lbl">Primary Execution Gap</div>
+      <div class="peg-val" id="v-peg">—</div>
+    </div>
+  </div>
+
+  <div class="row-charts">
+    <div class="card">
+      <div class="lbl">Community Execution Profile</div>
+      <div class="ch" style="height:195px"><canvas id="c-profile"></canvas></div>
+    </div>
+    <div class="card">
+      <div class="lbl">Domain Struggle Rates</div>
+      <div class="ch" style="height:195px"><canvas id="c-struggle"></canvas></div>
+    </div>
+  </div>
+
+  <div class="row-bot">
+    <div class="card">
+      <div class="lbl">Skill Distribution</div>
+      <div class="ch" style="height:175px"><canvas id="c-skill"></canvas></div>
+    </div>
+    <div class="card hi">
+      <div class="lbl" style="font-size:11px;letter-spacing:.5px">Recommended Actions</div>
+      <div class="rec-sub" id="rec-title">Primary Execution Gap: —</div>
+      <div class="rec-list" id="rec-list"><div class="rec-row"><div class="rec-dot"></div><p>Loading…</p></div></div>
+    </div>
+  </div>
+</main>
+
+<footer>Execution Gap Intelligence – Will Connect</footer>
+
+<script>
+// ─── CONFIG ───────────────────────────────────────────
+const SHEET_ID = '1qNpmuLtxDpQ1V9vStsS55gkt1Cwm70ZGg0TeWeYLWeg';
+const TABS = { looker:'Looker Data', responses:'Responses', gap:'Gap Data' };
+const REFRESH = 60000;
+
+function csvUrl(tab) {
+  return `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent(tab)}`;
+}
+
+// ─── CHART STATE ──────────────────────────────────────
+const CH = {};
+const GOLD='#c6a96b', GOLDB='#d9be88', TEXT='#eedfc0', GRID='rgba(198,169,107,0.08)', BORDR='rgba(198,169,107,0.3)';
+
+Chart.defaults.color = TEXT;
+Chart.defaults.font.family = "'Barlow',sans-serif";
+Chart.defaults.font.size = 11;
+
+function hbar(id, labels, vals, suffix='', max=null) {
+  const ctx = document.getElementById(id).getContext('2d');
+  const colors = vals.map((_,i)=> i===0 ? GOLDB : GOLD);
+  const cfg = {
+    type:'bar',
+    data:{ labels, datasets:[{ data:vals, backgroundColor:colors, borderRadius:3, borderSkipped:false }] },
+    options:{
+      indexAxis:'y', responsive:true, maintainAspectRatio:false,
+      animation:{ duration:700, easing:'easeOutQuart' },
+      plugins:{
+        legend:{ display:false },
+        tooltip:{
+          backgroundColor:'#1a081a', borderColor:'rgba(198,169,107,.4)', borderWidth:1,
+          titleColor:GOLD, bodyColor:TEXT,
+          callbacks:{ label: c => ` ${c.parsed.x}${suffix}` }
+        }
+      },
+      scales:{
+        x:{ max: max||undefined, grid:{ color:GRID }, border:{ color:BORDR }, ticks:{ color:TEXT, callback:v=>`${v}${suffix}` } },
+        y:{ grid:{ display:false }, border:{ color:BORDR }, ticks:{ color:TEXT } }
+      }
+    }
+  };
+  if (CH[id]) {
+    CH[id].data.labels = labels;
+    CH[id].data.datasets[0].data = vals;
+    CH[id].data.datasets[0].backgroundColor = colors;
+    CH[id].update(); return;
+  }
+  CH[id] = new Chart(ctx, cfg);
+}
+
+// ─── CSV PARSER ───────────────────────────────────────
+function parseCSV(raw) {
+  const lines = raw.trim().split('\n');
+  if (lines.length < 2) return [];
+  const hdrs = splitLine(lines[0]);
+  return lines.slice(1).map(l => {
+    const vs = splitLine(l);
+    const o = {};
+    hdrs.forEach((h,i) => { o[h] = (vs[i]||'').trim(); });
+    return o;
+  }).filter(r => Object.values(r).some(v=>v!==''));
+}
+
+function splitLine(l) {
+  const r=[]; let cur='', q=false;
+  for (const ch of l) {
+    if (ch==='"') { q=!q; }
+    else if (ch===',' && !q) { r.push(cur.trim()); cur=''; }
+    else cur+=ch;
+  }
+  r.push(cur.trim()); return r;
+}
+
+function toN(v){ return parseFloat((v||'').replace(/[^0-9.\-]/g,''))||0; }
+
+function findKey(obj, ...terms) {
+  const keys = Object.keys(obj);
+  for (const t of terms) {
+    const k = keys.find(k => k.toLowerCase().includes(t.toLowerCase()));
+    if (k) return k;
+  }
+  return null;
+}
+
+// ─── ACTIONS MAP ─────────────────────────────────────
+const ACTS = {
+  'Entry Discipline':{
+    means:'Members understand the setup but fail at entry timing and confirmation.',
+    action:'Run entry trigger drills focused on confirmation and patience.',
+    focus:['Entry confirmation','Premature entries'],
+    outcome:'Improved timing and stronger entry consistency.'
+  },
+  'Risk Logic':{
+    means:'Members are not applying consistent risk parameters to their trades.',
+    action:'Implement structured risk-sizing workshops and live review sessions.',
+    focus:['Position sizing','Stop placement'],
+    outcome:'Reduced drawdown and improved risk-reward discipline.'
+  },
+  'Volume Awareness':{
+    means:'Members are trading without accounting for volume context.',
+    action:'Introduce volume profile analysis as a core session component.',
+    focus:['Volume nodes','Low-volume zones'],
+    outcome:'Better trade location and timing using volume as confirmation.'
+  },
+  'Emotional Control':{
+    means:'Members are making impulsive decisions driven by emotion.',
+    action:'Run journaling and post-trade review protocols.',
+    focus:['Revenge trading','FOMO entries'],
+    outcome:'Calmer, process-driven execution with fewer reactive trades.'
+  },
+  'Structure Recognition':{
+    means:'Members struggle to identify key market structure levels.',
+    action:'Conduct daily structure mapping exercises on live charts.',
+    focus:['Break of structure','Key level identification'],
+    outcome:'Sharper structure reads leading to higher-quality setups.'
+  }
+};
+
+function buildRec(gap) {
+  document.getElementById('rec-title').textContent = `Primary Execution Gap: ${gap}`;
+  let m = null;
+  for (const [k,v] of Object.entries(ACTS)) {
+    if (gap && gap.toLowerCase().includes(k.toLowerCase())) { m=v; break; }
+  }
+  if (!m) m = Object.values(ACTS)[0];
+  document.getElementById('rec-list').innerHTML = `
+    <div class="rec-row"><div class="rec-dot"></div><p><strong>What this means:</strong><br>${m.means}</p></div>
+    <div class="rec-row"><div class="rec-dot"></div><p><strong>Recommended action:</strong><br>${m.action}</p></div>
+    <div class="rec-row"><div class="rec-dot"></div><p><strong>Focus areas:</strong><br>${m.focus.map(f=>'• '+f).join('<br>')}</p></div>
+    <div class="rec-row"><div class="rec-dot"></div><p><strong>Expected outcome:</strong><br>${m.outcome}</p></div>
+  `;
+}
+
+// ─── RENDER ───────────────────────────────────────────
+function render(looker, responses, gap) {
+  // Use Looker Data as primary; fall back to Responses
+  const L = looker.length ? looker : responses;
+  const N = L.length;
+  if (!N) { dbg('No rows found in Looker Data or Responses.'); return; }
+
+  const r0 = L[0];
+  console.log('Looker cols:', Object.keys(r0));
+  console.log('Gap cols:', gap.length ? Object.keys(gap[0]) : 'empty');
+
+  // ── KPIs ──
+  const scoreK = findKey(r0,'execution score','total score','overall score','score');
+  const deltaK = findKey(r0,'delta','progress delta','improvement');
+  const readyK = findKey(r0,'execution ready','ready');
+  const pegK   = findKey(r0,'primary gap','execution gap','gap');
+  const tierK  = findKey(r0,'tier','skill level','level','band','category');
+
+  const avgScore = scoreK ? Math.round(L.reduce((s,r)=>s+toN(r[scoreK]),0)/N) : '—';
+  const avgDelta = deltaK ? Math.round(L.reduce((s,r)=>s+toN(r[deltaK]),0)/N*10)/10 : '—';
+
+  let readyPct = '—';
+  if (readyK) {
+    const c = L.filter(r=>{ const v=(r[readyK]||'').toLowerCase(); return v==='yes'||v==='true'||v==='1'||toN(r[readyK])>=70; }).length;
+    readyPct = Math.round(c/N*100)+'%';
+  } else if (scoreK) {
+    readyPct = Math.round(L.filter(r=>toN(r[scoreK])>=70).length/N*100)+'%';
+  }
+
+  // Primary gap
+  let peg = '—';
+  if (gap.length) {
+    const g0 = gap[0];
+    const dK = findKey(g0,'domain','area','name','gap','category');
+    const rK = findKey(g0,'rate','struggle','%','pct','score','value');
+    if (dK && rK) {
+      peg = [...gap].sort((a,b)=>toN(b[rK])-toN(a[rK]))[0][dK] || '—';
+    }
+  } else if (pegK) {
+    const freq={};
+    L.forEach(r=>{ const v=r[pegK]; if(v) freq[v]=(freq[v]||0)+1; });
+    peg = Object.entries(freq).sort((a,b)=>b[1]-a[1])[0]?.[0] || '—';
+  }
+
+  document.getElementById('v-score').textContent   = avgScore;
+  document.getElementById('v-delta').textContent   = avgDelta;
+  document.getElementById('v-members').textContent = N;
+  document.getElementById('v-ready').textContent   = readyPct;
+  document.getElementById('v-peg').textContent     = peg;
+
+  // ── Execution Profile ──
+  const domains = ['Structure','Emotional','Volume','Risk','Entry'];
+  const profPairs = domains.map(d => {
+    const k = findKey(r0, d+' score', d.toLowerCase());
+    const v = k ? Math.round(L.reduce((s,r)=>s+toN(r[k]),0)/N*10)/10 : 0;
+    return { label:d, val:v };
+  }).sort((a,b)=>b.val-a.val);
+  hbar('c-profile', profPairs.map(p=>p.label), profPairs.map(p=>p.val), '', 100);
+
+  // ── Domain Struggle Rates ──
+  let sLabels=[], sVals=[];
+  if (gap.length) {
+    const g0 = gap[0];
+    const dK = findKey(g0,'domain','area','name','gap','category');
+    const rK = findKey(g0,'rate','struggle','%','pct','score','value');
+    if (dK && rK) {
+      const sorted = [...gap].sort((a,b)=>toN(b[rK])-toN(a[rK]));
+      sLabels = sorted.map(r=>r[dK]);
+      sVals   = sorted.map(r=>Math.round(toN(r[rK])));
+    }
+  }
+  if (!sLabels.length) {
+    // Derive from low scores in Looker
+    const dm = {
+      'Risk Logic':            findKey(r0,'risk logic'),
+      'Entry Discipline':      findKey(r0,'entry discipline'),
+      'Volume Awareness':      findKey(r0,'volume awareness'),
+      'Emotional Control':     findKey(r0,'emotional control'),
+      'Structure Recognition': findKey(r0,'structure recognition'),
+    };
+    const pairs = Object.entries(dm).filter(([,k])=>k)
+      .map(([l,k])=>({ label:l, val:Math.round(L.filter(r=>toN(r[k])<50).length/N*100) }))
+      .sort((a,b)=>b.val-a.val);
+    sLabels = pairs.map(p=>p.label);
+    sVals   = pairs.map(p=>p.val);
+  }
+  if (sLabels.length) hbar('c-struggle', sLabels, sVals, '%', 100);
+
+  // ── Skill Distribution ──
+  const tiers = ['Elite','Advanced','Developing','Struggling'];
+  let tv;
+  if (tierK) {
+    tv = tiers.map(t=>Math.round(L.filter(r=>(r[tierK]||'').toLowerCase()===t.toLowerCase()).length/N*100));
+  } else if (scoreK) {
+    tv = [
+      Math.round(L.filter(r=>toN(r[scoreK])>=85).length/N*100),
+      Math.round(L.filter(r=>toN(r[scoreK])>=70&&toN(r[scoreK])<85).length/N*100),
+      Math.round(L.filter(r=>toN(r[scoreK])>=50&&toN(r[scoreK])<70).length/N*100),
+      Math.round(L.filter(r=>toN(r[scoreK])<50).length/N*100),
+    ];
+  } else { tv=[20,31,31,18]; }
+  hbar('c-skill', tiers, tv, '%', 100);
+
+  // ── Rec Actions ──
+  buildRec(peg);
+
+  // ── Timestamp ──
+  const now = new Date();
+  document.getElementById('ts').textContent =
+    `Live · Updated ${now.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})} · Refreshes every 60s`;
+}
+
+// ─── DEBUG ────────────────────────────────────────────
+function dbg(msg) {
+  const p = document.getElementById('debug');
+  p.style.display = 'block';
+  document.getElementById('dbg-msg').innerHTML += msg + '<br>';
+}
+
+// ─── FETCH ────────────────────────────────────────────
+async function fetchTab(tab) {
+  const r = await fetch(csvUrl(tab));
+  if (!r.ok) throw new Error(`HTTP ${r.status}`);
+  const t = await r.text();
+  if (t.trim().startsWith('<')) throw new Error('Returned HTML — sheet may not be public');
+  return parseCSV(t);
+}
+
+async function loadAll() {
+  document.getElementById('debug').style.display='none';
+  document.getElementById('dbg-msg').innerHTML='';
+
+  const safe = (tab) => fetchTab(tab).catch(e => { dbg(`Tab "${tab}": ${e.message}`); return []; });
+  const [looker, responses, gap] = await Promise.all([
+    safe(TABS.looker), safe(TABS.responses), safe(TABS.gap)
+  ]);
+
+  if (!looker.length && !responses.length) {
+    dbg('No data loaded. Make sure the sheet is set to "Anyone with the link — Viewer" and these tab names exist exactly: <b>Looker Data</b>, <b>Responses</b>, <b>Gap Data</b>.');
+  } else {
+    render(looker, responses, gap);
+  }
+
+  const ldr = document.getElementById('loader');
+  ldr.style.opacity='0';
+  setTimeout(()=>ldr.style.display='none', 500);
+}
+
+loadAll();
+setInterval(loadAll, REFRESH);
+</script>
+</body>
+</html>
