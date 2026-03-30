@@ -456,7 +456,7 @@ function render(looker, responses, gap) {
   // Primary gap = most common Weakest_Domain
   const freq={};
   L.forEach(r=>{ const v=r['Weakest_Domain']; if(v) freq[v]=(freq[v]||0)+1; });
-  const peg = Object.entries(freq).sort((a,b)=>b[1]-a[1])[0]?.[0] || '—';
+  const freqSorted = Object.entries(freq).sort((a,b)=>b[1]-a[1]); const topCount = freqSorted[0]?.[1]||0; const topDomains = freqSorted.filter(([,c])=>c>=topCount).map(([d])=>d); const peg = topDomains.join(', ')||'—';
 
   document.getElementById('v-score').textContent   = avgScore;
   document.getElementById('v-delta').textContent   = avgDelta > 0 ? '+'+avgDelta : avgDelta;
