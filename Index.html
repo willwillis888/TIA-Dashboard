@@ -282,7 +282,7 @@ const REFRESH = 60000;
 
 function csvUrl(tab) {
   const sheet = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent(tab)}`;
-  return `https://corsproxy.io/?${encodeURIComponent(sheet)}`;
+  return `https://api.allorigins.win/raw?url=${encodeURIComponent(sheet)}`;
 }
 
 const CH = {};
